@@ -1,83 +1,119 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include "Stack_HW1.h"
-#include <fstream>
-#include <ctime>
-#include <iomanip>
 
-#define ASSERT_OK \
-	if(!this->Ok()) \
-	{ \
-		this->Dump(); \
-		printf("Stack is damaged!\n"); \
-	}
+#include "Stack_HW1.h"
+
+std::exception is_empty("Vector is empty!");
+
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
-Stack<value_type>::Stack() : size_(0)
+Stack<value_type>::Stack() : size_(0), data_(new data_type()) {}
+	
+//=======================================================
+// new
+// квадратные скобки -- для создания массива
+// круглые скобки -- для вызова конструктора
+// 
+// если память не выделится, new выбросит исключение
+//
+// вызывается конструктор Vector<value_type>(size_t Size),
+// и он делает все остальное
+//=======================================================
+
+//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+template<typename value_type>
+Stack<value_type>::Stack(size_t capacity) : size_(0), data_(new data_type(capacity)) {}
+
+//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+template<typename value_type>
+Stack<value_type>::Stack(const Stack<value_type> &that) : size_(that.size_), data_(new data_type(that.data_))
 {
-	capacity_ = 10;
-	data_ = new Vector<value_type>[capacity_];	//что, если память не выделится?
-	size_ = 0;
+	ASSERT_OK;
 }
+//=======================================================================================
+// вызывается конструктор копирования Vector<value_type>(const Vector<value_type> &that)
+// и копирует все содержимое that.data_ в this->data_
+//=======================================================================================
+
+//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+template<typename value_type>
+Stack<value_type>::Stack(Stack<value_type> &&that) : size_(that.size_), data_(that.data_)
+{
+	ASSERT_OK;
+	that.data_ = nullptr;
+//=======================================================================================
+// здесь ничего не копируется, просто перемещается
+// that.data_ = nullptr и теперь в деструкторе that нам уже нельзя удалять data_,
+// поэтому надо проверять
+//=======================================================================================
+}
+
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 Stack<value_type>::~Stack()
 {
-	size_ = POISON_VAL;
-	capacity_ = POISON_VAL;
-	delete data_;
+	if (data_)
+		delete data_;
 }
+
+//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+template<typename value_type>
+Stack<value_type> &Stack<value_type>::operator=(Stack<value_type> &another)
+{
+	ASSERT_OK;
+	if (this != &another)
+	{
+		size_ = another.size_;
+		*data_ = *another.data_; // присваивание копии (Vector::operator=(Vector &another))
+	}
+	ASSERT_OK;
+	return *this;
+}
+
+//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+template<typename value_type>
+Stack<value_type> &Stack<value_type>::operator=(Stack<value_type> &&another)
+{
+	ASSERT_OK;
+	if (this != &another)
+	{
+		size_ = another.size_;
+		*data_ = *another.data_; // присваивание перемещения (Vector::operator=(Vector &&another))
+								// но это не точно
+	}
+	ASSERT_OK;
+	return *this;
+}
+
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 bool Stack<value_type>::Push(value_type value)
 {
 	ASSERT_OK;
-	data_->Insert(value);
-	if (size_ == capacity_) capacity_ += 10;	//внутри Insert'a вектор сам расширится
-	size++;
-	//old non-template version 
-	/*	
-	if (size_ >= capacity_)
-	{
-		ASSERT_OK;
-		return false;
-	}
-	data_[size_] = value;
-	size_++;
+	if (size_ == data_->capacity_)
+		data_->Expand();
+	data_[size_++] = value;
 	ASSERT_OK;
-	return true;
-	*/
+
 }
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 void Stack<value_type>::Pop()
 {
 	ASSERT_OK;
-	if (size_ > 0)
-	{
-		data_[size_] = POISON_VAL;
-		size_--;
-	}
-	else
-	{
-		//????????????????
-	}
+	if (IsEmpty())
+		throw is_empty;
+	//data_[--size_] = POISON_VAL;
+	--size_;
 	ASSERT_OK;
-	return;
 }
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 value_type Stack<value_type>::Top() const
 {
 	ASSERT_OK;
-	if (size_ > 0)
-	{
-		return data_[size_-1];
-	}
-	else
-	{
-		return (value_type)POISON_VAL;	//норм ли?
-	}
+	if (IsEmpty())
+		throw is_empty;
+	return data_[size_ - 1];
 }
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
@@ -86,28 +122,40 @@ size_t Stack<value_type>::Size() const
 	ASSERT_OK;
 	return size_;
 }
+
+
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+//======================================
+// возможно, это не нужно
+//======================================
 template<typename value_type>
 size_t Stack<value_type>::Capacity() const
 {
 	ASSERT_OK;
-	return capacity_;
+	return data_->capacity_;
 }
+
+
+
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
-bool Stack<value_type>::Empty() const
+bool Stack<value_type>::IsEmpty() const
 {
 	ASSERT_OK;
-	if (size_ == 0) return true;
-	else return false;
+	return size_ == 0;
 }
+
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+//======================================
+// size_ беззнаковая переменная
+// всегда >= 0
+//======================================
 template<typename value_type>
 bool Stack<value_type>::Ok() const
 {
-	if ((size_ <= capacity_) && (size_ >= 0)) return true;
-	else return false;
+	return size_ <= data_->capacity_
 }
+
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 void Stack<value_type>::Dump() const
