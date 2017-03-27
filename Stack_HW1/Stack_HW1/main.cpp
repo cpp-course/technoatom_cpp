@@ -4,8 +4,9 @@
 //! @author Pasha, 2017
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 
-#include <iostream>
-#include "Stack_HW1.h"
+#include "Vector.h"
+
+//#include "Stack_HW1.h"
 /*
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 //! A unit‐test to Push() method of Stack
@@ -38,8 +39,25 @@
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 //! main
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+
+#include "MyPrint.h"
 int main()
 {
-
+	Vector<int> v;
+	for (int i = 0; i < 15; ++i)
+		v.PushBack(i);
+	Vector<int>::Iterator it = v.Begin();
+	for (; it != v.End(); ++it)
+		std::cout << *it << ' ';
+	std::cout << std::endl;
+	try {
+		*it;
+	}
+	catch (std::exception ex) {
+		std::cout << ex.what();
+	}
+	std::cout << std::endl;
+	MyPrint("x = #, y = #, z = #####", 1, 2, 3, 4);
+	std::cin.ignore();
 	return 0;
 }

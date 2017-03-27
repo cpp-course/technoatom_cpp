@@ -17,7 +17,55 @@ template<typename value_type>
 class Vector
 {
 public:
-
+	class Iterator
+	{
+		value_type *ptr_;
+		Vector *vec_;
+	public:
+		Iterator() : ptr_(nullptr), vec_(nullptr) {}
+		Iterator(value_type *ptr, Vector *vec) : ptr_(ptr), vec_(vec) {}
+		Iterator(const Iterator &that) : ptr_(that.ptr_), vec_(that.vec_) {}
+		Iterator(Iterator &&that) : ptr_(that.ptr_), vec_(that.vec_) {}
+		value_type &operator*()
+		{
+			if (ptr_ && vec_)
+				return *ptr_;
+			throw std::exception("pointer to nullptr");
+		}
+		Iterator &operator++()
+		{
+			if (++ptr_ < vec_->data_ + vec_->size_)
+				return *this;
+			else
+				return ptr_ = nullptr, *this;
+		}
+		bool operator==(const Iterator &that)
+		{
+			return ptr_ == that.ptr_;
+		}
+		bool operator!=(const Iterator &that)
+		{
+			return ptr_ != that.ptr_;
+		}
+		Iterator &operator=(const Iterator &that)
+		{
+			if (this != &that)
+			{
+				ptr_ = that.ptr_;
+				vec_ = that.vec_;
+			}
+			return *this;
+		}
+		Iterator &operator=(Iterator &&that)
+		{
+			if (this != &that)
+			{
+				ptr_ = that.ptr_;
+				vec_ = that.vec_;
+			}
+			return *this;
+		}
+	};
 
 	void *operator new(size_t size);
 	void *operator new(size_t size, void* ptr);
@@ -99,6 +147,16 @@ public:
 	void PushBack(const value_type &value);
 	void PushBack(value_type &&value);
 	void PopBack();
+
+	Iterator Begin()
+	{
+		return Iterator(this->data_, this);
+	}
+
+	Iterator End()
+	{
+		return Iterator(nullptr, this);
+	}
 
 //	void Resize(size_t size);
 //	void Reserve(size_t capacity);
@@ -462,29 +520,31 @@ void* Vector<value_type>::operator new(size_t size, void* ptr)
 
 
 
-
+/*
 
 
 class BitVal
 {
 	size_t num;
-	size_t val;
+	size_t *val;
 public:
 	operator bool()
 	{
-		return val & (1 << num);
+		return *val & (1 << num);
 	}
-	BitVal &operator()(size_t v, size_t n)
+	BitVal(size_t &v, size_t n)
 	{
-		val = v;
+		val = &v;
 		num = n;
-		return *this;
+	}
+	bool operator=(const bool fl)
+	{
+		if (fl)
+			*val |= 1 << num;
+		else
+			*val &= ~(1 << num);
 	}
 };
-
-BitVal myBitVal;
-
-
 
 
 
@@ -635,7 +695,7 @@ public:
 				return false;
 		return true;
 	}
-	*/
+	
 private:
 	size_t size_;
 	size_t capacity_;
@@ -691,7 +751,7 @@ BitVal& Vector<bool>::operator[] (int index)
 	ASSERT_OK;
 	if (index < 0 || index >= size_)
 		throw std::exception("Invalid index!");
-	return myBitVal(data_[index / bit_ammount], index%bit_ammount);
+	return BitVal(data_[index / bit_ammount], index%bit_ammount);
 }
 
 
@@ -702,8 +762,8 @@ Vector<bool> &Vector<bool>::operator=(Vector<bool> &another)
 	{
 		size_ = another.size_;
 		capacity_ = another.capacity_;
-		data_ = new size_t[(capacity_ - 1) / bit_ammount + 1];
-		int count = (size_ - 1) / bit_ammount + 1;
+		size_t count = (capacity_ - 1) / bit_ammount + 1;
+		data_ = new size_t[count];
 		for (int i = 0; i < count; ++i)
 			data_[i] = another.data_[i];
 	}
@@ -720,6 +780,7 @@ Vector<bool> &Vector<bool>::operator=(Vector<bool> &&another)
 		size_ = another.size_;
 		capacity_ = another.capacity_;
 		data_ = another.data_;
+		another.data_ = nullptr;
 	}
 	ASSERT_OK;
 	return *this;
@@ -838,4 +899,4 @@ void* Vector<value_type>::operator new(size_t size, void* ptr)
 {
 
 	return ptr;
-}
+}*/

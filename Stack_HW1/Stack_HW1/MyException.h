@@ -4,7 +4,12 @@
 //! @author Pasha2La
 //---------------------
 
-class MyException
+
+#include <exception>
+
+std::exception ex()
+
+class MyException : public std::exception
 {
 public:
 	MyException(): code_(100500), mesg_("Smth went wrong"), file_("NULL"), line_("NULL") {};

@@ -245,19 +245,6 @@ size_t Stack<value_type>::Size() const
 
 
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
-//======================================
-// возможно, это не нужно
-//======================================
-template<typename value_type>
-size_t Stack<value_type>::Capacity() const
-{
-	ASSERT_OK;
-	return data_->capacity_;
-}
-
-
-
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 bool Stack<value_type>::IsEmpty() const
 {
