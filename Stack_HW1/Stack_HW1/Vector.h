@@ -7,6 +7,8 @@
 //! @data 2017
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 
+#pragma once
+
 #include "Header.h"
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -17,7 +19,7 @@ template<typename value_type>
 class Vector
 {
 public:
-	class Iterator
+	class Iterator : public std::iterator<std::random_access_iterator_tag, value_type>
 	{
 		value_type *ptr_;
 		Vector *vec_;
@@ -32,12 +34,57 @@ public:
 				return *ptr_;
 			throw std::exception("pointer to nullptr");
 		}
+		int operator-(const Iterator &right)
+		{
+			return ptr_ - right.ptr_;
+		}
+		Iterator operator-(int right)
+		{
+			return Iterator(ptr_ - right, vec_);
+		}
+		Iterator operator+(int right)
+		{
+			return Iterator(ptr_ + right, vec_);
+		}
+		bool operator<(const Iterator &right)
+		{
+			return ptr_ < right.ptr_;
+		}/*
+		bool operator<=(const Iterator &right)
+		{
+			return ptr_ <= right.ptr_ || ptr_ || !right.ptr_;
+		}
+		bool operator>(const Iterator &right)
+		{
+			return ptr_ > right.ptr_ || !ptr_ || right.ptr_;
+		}
+		bool operator>=(const Iterator &right)
+		{
+			return ptr_ >= right.ptr_ || !ptr_ || right.ptr_;
+		}*/
 		Iterator &operator++()
 		{
-			if (++ptr_ < vec_->data_ + vec_->size_)
-				return *this;
-			else
-				return ptr_ = nullptr, *this;
+			if (++ptr_ > vec_->data_ + vec_->size_)
+				ptr_ = vec_->data_ + vec_->size_;
+			return *this;
+		}
+		Iterator &operator--()
+		{
+			if (--ptr_ < vec_->data_)
+				ptr_ = vec_->data_ + vec_->size_;
+			return *this;
+		}
+		Iterator &operator++(int)
+		{
+			Iterator tmp(*this);
+			++*this;
+			return tmp;
+		}
+		Iterator &operator--(int)
+		{
+			Iterator tmp(*this);
+			--*this
+			return tmp;
 		}
 		bool operator==(const Iterator &that)
 		{
@@ -65,6 +112,17 @@ public:
 			}
 			return *this;
 		}
+		Iterator &operator+=(int right)
+		{
+			ptr_ = (ptr_ + right < vec_->data_ + vec_->size_) ? ptr_ + right : vec_->data_ + vec_->size_;
+			return *this;
+		}
+		Iterator &operator-=(int right)
+		{
+			ptr = ptr_ - right >= vec_->data_ ? ptr_ - right : vec_->data_ + vec_->size_;
+			return *this;
+		}
+
 	};
 
 	void *operator new(size_t size);
@@ -150,12 +208,12 @@ public:
 
 	Iterator Begin()
 	{
-		return Iterator(this->data_, this);
+		return Iterator(data_, this);
 	}
 
 	Iterator End()
 	{
-		return Iterator(nullptr, this);
+		return Iterator(data_ + size_, this);
 	}
 
 //	void Resize(size_t size);

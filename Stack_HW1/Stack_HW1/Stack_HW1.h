@@ -1,4 +1,6 @@
-﻿//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+﻿
+#define _CRT_SECURE_NO_WARNINGS
+//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 //! @file Stack_HW1.h
 //! Implements a stack class
 //!
@@ -77,7 +79,7 @@ public:
 	//!
 	//! @return success of operation
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐------------------------------
-	bool Push(value_type value);
+	void Push(value_type value);
 
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐------------------------------
 	//! Deletes top value from the stack
@@ -118,7 +120,7 @@ public:
 	//----------------------------------------------------------------
 	//! Dumper
 	//----------------------------------------------------------------
-	void Dump() const;
+	void Dump(const char*) const;
 
 private:
 	data_type* data_;				//!< Data block
@@ -207,13 +209,12 @@ Stack<value_type> &Stack<value_type>::operator=(Stack<value_type> &&another)
 
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
-bool Stack<value_type>::Push(value_type value)
+void Stack<value_type>::Push(value_type value)
 {
 	ASSERT_OK;
 	data_->PushBack(value);
 	++size_;
 	ASSERT_OK;
-
 }
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
@@ -233,7 +234,7 @@ value_type Stack<value_type>::Top() const
 	ASSERT_OK;
 	if (IsEmpty())
 		throw std::exception("Stack is empty!");
-	return data_[size_ - 1];
+	return data_->operator[](size_ - 1);
 }
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
@@ -260,12 +261,12 @@ bool Stack<value_type>::IsEmpty() const
 template<typename value_type>
 bool Stack<value_type>::Ok() const
 {
-	return size_ <= data_->capacity_
+	return size_ <= data_->Capacity();
 }
 
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
-void Stack<value_type>::Dump() const
+void Stack<value_type>::Dump(const char* qwe) const
 {
 	std::ofstream dumpfile("Dump.txt", std::ios_base::app);
 	if (!dumpfile.is_open())
@@ -279,12 +280,12 @@ void Stack<value_type>::Dump() const
 	dumpfile << "\n\n";
 	dumpfile << "Stack " << " ok(" << Ok() << ")\n";
 	dumpfile << "size_ = " << size_ << "\n";
-	dumpfile << "capacity_ = " << data_->capacity_ << "\n";
-	dumpfile << "data [" << data_->capacity_ << "]:";
+	dumpfile << "capacity_ = " << data_->Capacity() << "\n";
+	dumpfile << "data [" << data_->Capacity() << "]:";
 	dumpfile << "{\n";
-	for (size_t i = 0; i < data_->size_; i++)
+	for (size_t i = 0; i < size_; i++)
 	{
-		dumpfile << "[" << i << "] = " << data_[i] << "\n";
+		dumpfile << "[" << i << "] = " << data_->operator[](i) << "\n";
 	}
 	dumpfile << "}\n";
 	dumpfile.close();

@@ -20,15 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array.h" />
+    <ClInclude Include="Header.h" />
+    <ClInclude Include="MyException.h" />
+    <ClInclude Include="MyPrint.h" />
     <ClInclude Include="Stack_HW1.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Vector_Iterator.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Array.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Stack_HW1.cpp" />
-    <ClCompile Include="TestArray.cpp" />
     <ClCompile Include="TestStack.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>

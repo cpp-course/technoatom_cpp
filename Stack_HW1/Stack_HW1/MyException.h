@@ -7,7 +7,6 @@
 
 #include <exception>
 
-std::exception ex()
 
 class MyException : public std::exception
 {

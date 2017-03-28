@@ -6,7 +6,7 @@
 
 #include "Vector.h"
 
-//#include "Stack_HW1.h"
+#include "Stack_HW1.h"
 /*
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 //! A unit‐test to Push() method of Stack
@@ -41,23 +41,37 @@
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 
 #include "MyPrint.h"
+#include <algorithm>
+#include <vector>
+
+#define TEST(what, func)								\
+	if (!what)											\
+		std::cout << #func" is failed!" << std::endl;	\
+	else												\
+		std::cout << #func" is OK!" << std::endl
+
+
+
+
+int check_stack() {
+	Stack<int> mystack;
+	TEST(mystack.IsEmpty(), IsEmpty);
+	for (int i = 0; i < 100; ++i)
+		mystack.Push(i);
+	TEST(mystack.Size() == 100, Size);
+	mystack.Pop();
+	TEST(mystack.Top() == 98, Top);
+	return 42;
+}
+
 int main()
 {
-	Vector<int> v;
-	for (int i = 0; i < 15; ++i)
-		v.PushBack(i);
-	Vector<int>::Iterator it = v.Begin();
-	for (; it != v.End(); ++it)
-		std::cout << *it << ' ';
-	std::cout << std::endl;
 	try {
-		*it;
+		check_stack();
 	}
-	catch (std::exception ex) {
-		std::cout << ex.what();
+	catch (std::exception exc) {
+		std::cout << exc.what() << std::endl;
 	}
-	std::cout << std::endl;
-	MyPrint("x = #, y = #, z = #####", 1, 2, 3, 4);
 	std::cin.ignore();
 	return 0;
 }
