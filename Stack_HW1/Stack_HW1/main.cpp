@@ -105,6 +105,30 @@ void check_iterators()
 	std::cout << std::endl;
 }
 
+void check_shared_ptr()
+{
+	std::cout << "For shared_ptr:\n";
+
+	std::cout << "\nsort for shared_ptr<int>\n";
+	Vector<shared_ptr<int> > ptrVec(20);
+	for (auto it = ptrVec.Begin(); it != ptrVec.End(); ++it)
+		*it = new int(rand() % 129);
+
+	std::cout << "Before sort : ";
+	for (auto it = ptrVec.Begin(); it != ptrVec.End(); ++it)
+		std::cout << **it << ' ';
+	std::cout << std::endl;
+
+	// try to sort
+	sort(ptrVec);
+	// try to print
+	std::cout << "After sort : ";
+	for (auto it = ptrVec.Begin(); it != ptrVec.End(); ++it)
+		std::cout << **it << ' ';
+	std::cout << std::endl;
+	std::cout << "shared_ptr is OK!!!\n";
+}
+
 void check_auto_ptr()
 {
 	std::cout << "For auto_ptr:\n";
@@ -152,6 +176,7 @@ int main()
 		check_stack();
 		check_vector();
 		check_iterators();
+		check_shared_ptr();
 		check_auto_ptr();
 	}
 	catch (std::exception exc) {
