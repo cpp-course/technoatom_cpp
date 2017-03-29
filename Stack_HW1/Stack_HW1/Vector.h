@@ -1,4 +1,5 @@
-﻿//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+﻿#define _SCL_SECURE_NO_WARNINGS
+//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 //! @file Vector.h
 //! Implements an Vector class
 //!
@@ -22,10 +23,10 @@ public:
 	class Iterator : public std::iterator<std::random_access_iterator_tag, value_type>
 	{
 		value_type *ptr_;
-		Vector *vec_;
+		const Vector * vec_;
 	public:
 //		Iterator() : ptr_(nullptr), vec_(nullptr) {}
-		Iterator(value_type *ptr, Vector *vec) : ptr_(ptr), vec_(vec) {}
+		Iterator(value_type *ptr, const Vector * vec) : ptr_(ptr), vec_(vec) {}
 		Iterator(const Iterator &that) : ptr_(that.ptr_), vec_(that.vec_) {}
 		Iterator(Iterator &&that) : ptr_(that.ptr_), vec_(that.vec_) {}
 		value_type &operator*()
@@ -213,14 +214,14 @@ public:
 	void PushBack(value_type &&value);
 	void PopBack();
 
-	Iterator Begin()
+	Iterator Begin() const
 	{
 		return Iterator(data_, this);
 	}
 
-	Iterator End()
+	Iterator End() const
 	{
-		return Iterator(data_ + size_, this);
+		return Iterator((value_type *)(data_ + size_), this);
 	}
 
 //	void Resize(size_t size);
@@ -347,7 +348,7 @@ Vector<value_type>::Vector(const Vector<value_type> &that) :
 	size_(that.size_), capacity_(that.capacity_), data_(new value_type[that.capacity_])
 {
 	ASSERT_OK;
-	std::copy(another.Begin(), another.End(), Begin());
+	std::copy(that.Begin(), that.End(), Begin());
 }
 
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐

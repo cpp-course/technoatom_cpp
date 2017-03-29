@@ -21,8 +21,10 @@
   <ItemGroup>
     <ClInclude Include="Array.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="Sort.h" />
     <ClInclude Include="MyException.h" />
     <ClInclude Include="MyPrint.h" />
+    <ClInclude Include="SmartPointers.h" />
     <ClInclude Include="Stack_HW1.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Vector_Iterator.h" />

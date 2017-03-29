@@ -41,6 +41,8 @@
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 
 #include "MyPrint.h"
+#include "SmartPointers.h"
+#include "Sort.h"
 #include <algorithm>
 #include <vector>
 
@@ -54,6 +56,7 @@
 
 
 void check_stack() {
+	std::cout << "For Stack:\n";
 	Stack<int> mystack;
 	TEST(mystack.IsEmpty(), IsEmpty());
 	for (int i = 0; i < 100; ++i)
@@ -61,10 +64,12 @@ void check_stack() {
 	TEST(mystack.Size() == 100, Size());
 	mystack.Pop();
 	TEST(mystack.Top() == 98, Top());
+	std::cout << std::endl;
 }
 
 void check_vector()
 {
+	std::cout << "For Vector:\n";
 	Vector<int> myvector;
 	TEST(myvector.IsEmpty(), IsEmpty());
 	for (int i = 0; i < 100; i++)
@@ -73,23 +78,72 @@ void check_vector()
 	myvector.PopBack();
 	TEST(myvector.Last() == 99, Last());
 	TEST(myvector.First() == 0, First());
+	std::cout << std::endl;
 }
 
 void check_iterators()
 {
-	Vector<int> myvector(30);
+	std::cout << "For Iterators:\n";
+	Vector<int> myvector(20);
 	srand(time(0));
 	for (auto it = myvector.Begin(); it != myvector.End(); ++it)
 		*it = rand() % 129;
-	std::cout << "Start sequence: ";
+	std::cout << "\nsort with std::sort\n";
+	std::cout << "Before sort : ";
 	for (auto it = myvector.Begin(); it != myvector.End(); ++it)
 		std::cout << *it << ' ';
 	std::cout << std::endl;
 	std::sort(myvector.Begin(), myvector.End());
-	std::cout << "End sequence: ";
+	std::cout << "After sort : ";
 	for (auto it = myvector.Begin(); it != myvector.End(); ++it)
 		std::cout << *it << ' ';
 	std::cout << std::endl;
+	Vector<int> v2 = myvector; // copy constructor use iterators
+	std::cout << "Copy : ";
+	for (auto it = v2.Begin(); it != v2.End(); ++it)
+		std::cout << *it << ' ';
+	std::cout << std::endl;
+}
+
+void check_auto_ptr()
+{
+	std::cout << "For auto_ptr:\n";
+	std::cout << "\nsort for int\n";
+	Vector<int> v2(20);
+	for (auto it = v2.Begin(); it != v2.End(); ++it)
+		*it = rand() % 129;
+
+	std::cout << "Before sort : ";
+	for (auto it = v2.Begin(); it != v2.End(); ++it)
+		std::cout << *it << ' ';
+	std::cout << std::endl;
+
+	sort(v2);
+
+	std::cout << "After sort : ";
+	for (auto it = v2.Begin(); it != v2.End(); ++it)
+		std::cout << *it << ' ';
+	std::cout << std::endl;
+
+	std::cout << "\nsort for auto_ptr<int>\n";
+	Vector<auto_ptr<int> > very_bad_thing(20);
+	for (auto it = very_bad_thing.Begin(); it != very_bad_thing.End(); ++it)
+		*it = new int(rand() % 129);
+
+	std::cout << "Before sort : ";
+	for (auto it = very_bad_thing.Begin(); it != very_bad_thing.End(); ++it)
+		std::cout << **it << ' ';
+	std::cout << std::endl;
+
+	// try to sort
+	sort(very_bad_thing);
+	// here is it
+	// try to print
+	std::cout << "After sort : ";
+	for (auto it = very_bad_thing.Begin(); it != very_bad_thing.End(); ++it)
+		std::cout << **it << ' ';
+	std::cout << std::endl;
+	std::cout << "auto_ptr is OK!!!\n";
 }
 
 int main()
@@ -98,6 +152,7 @@ int main()
 		check_stack();
 		check_vector();
 		check_iterators();
+		check_auto_ptr();
 	}
 	catch (std::exception exc) {
 		std::cout << exc.what() << std::endl;
