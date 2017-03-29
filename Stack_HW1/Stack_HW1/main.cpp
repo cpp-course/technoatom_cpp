@@ -53,7 +53,7 @@
 
 
 
-int check_stack() {
+void check_stack() {
 	Stack<int> mystack;
 	TEST(mystack.IsEmpty(), IsEmpty());
 	for (int i = 0; i < 100; ++i)
@@ -61,10 +61,9 @@ int check_stack() {
 	TEST(mystack.Size() == 100, Size());
 	mystack.Pop();
 	TEST(mystack.Top() == 98, Top());
-	return 42;
 }
 
-int check_vector()
+void check_vector()
 {
 	Vector<int> myvector;
 	TEST(myvector.IsEmpty(), IsEmpty());
@@ -74,8 +73,23 @@ int check_vector()
 	myvector.PopBack();
 	TEST(myvector.Last() == 99, Last());
 	TEST(myvector.First() == 0, First());
+}
 
-	return 42;
+void check_iterators()
+{
+	Vector<int> myvector(30);
+	srand(time(0));
+	for (auto it = myvector.Begin(); it != myvector.End(); ++it)
+		*it = rand() % 129;
+	std::cout << "Start sequence: ";
+	for (auto it = myvector.Begin(); it != myvector.End(); ++it)
+		std::cout << *it << ' ';
+	std::cout << std::endl;
+	std::sort(myvector.Begin(), myvector.End());
+	std::cout << "End sequence: ";
+	for (auto it = myvector.Begin(); it != myvector.End(); ++it)
+		std::cout << *it << ' ';
+	std::cout << std::endl;
 }
 
 int main()
@@ -83,6 +97,7 @@ int main()
 	try {
 		check_stack();
 		check_vector();
+		check_iterators();
 	}
 	catch (std::exception exc) {
 		std::cout << exc.what() << std::endl;

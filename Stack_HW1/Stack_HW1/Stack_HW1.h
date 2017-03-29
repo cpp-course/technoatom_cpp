@@ -132,16 +132,6 @@ private:
 template<typename value_type>
 Stack<value_type>::Stack() : size_(0), data_(new data_type()) {}
 
-//=======================================================
-// new
-// квадратные скобки -- для создания массива
-// круглые скобки -- для вызова конструктора
-// 
-// если память не выделится, new выбросит исключение
-//
-// вызывается конструктор Vector<value_type>(size_t Size),
-// и он делает все остальное
-//=======================================================
 
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
@@ -153,10 +143,6 @@ Stack<value_type>::Stack(const Stack<value_type> &that) : size_(that.size_), dat
 {
 	ASSERT_OK;
 }
-//=======================================================================================
-// вызывается конструктор копирования Vector<value_type>(const Vector<value_type> &that)
-// и копирует все содержимое that.data_ в this->data_
-//=======================================================================================
 
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
@@ -164,11 +150,6 @@ Stack<value_type>::Stack(Stack<value_type> &&that) : size_(that.size_), data_(th
 {
 	ASSERT_OK;
 	that.data_ = nullptr;
-	//=======================================================================================
-	// здесь ничего не копируется, просто перемещается
-	// that.data_ = nullptr и теперь в деструкторе that нам уже нельзя удалять data_,
-	// поэтому надо проверять
-	//=======================================================================================
 }
 
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
@@ -202,7 +183,6 @@ Stack<value_type> &Stack<value_type>::operator=(Stack<value_type> &&another)
 	{
 		size_ = another.size_;
 		*data_ = *another.data_; // присваивание перемещения (Vector::operator=(Vector &&another))
-								 // но это не точно
 	}
 	ASSERT_OK;
 	return *this;
@@ -217,6 +197,7 @@ void Stack<value_type>::Push(value_type value)
 	++size_;
 	ASSERT_OK;
 }
+
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 void Stack<value_type>::Pop()
@@ -228,6 +209,7 @@ void Stack<value_type>::Pop()
 	--size_;
 	ASSERT_OK;
 }
+
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 value_type Stack<value_type>::Top() const
@@ -235,8 +217,9 @@ value_type Stack<value_type>::Top() const
 	ASSERT_OK;
 	if (IsEmpty())
 		throw std::exception("Stack is empty!");
-	return data_->operator[](size_ - 1);
+	return (*data_)[size_ - 1];
 }
+
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 size_t Stack<value_type>::Size() const
@@ -255,10 +238,6 @@ bool Stack<value_type>::IsEmpty() const
 }
 
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
-//======================================
-// size_ беззнаковая переменная
-// всегда >= 0
-//======================================
 template<typename value_type>
 bool Stack<value_type>::Ok() const
 {
@@ -286,7 +265,7 @@ void Stack<value_type>::Dump(const char* qwe) const
 	dumpfile << "{\n";
 	for (size_t i = 0; i < size_; i++)
 	{
-		dumpfile << "[" << i << "] = " << data_->operator[](i) << "\n";
+		dumpfile << "[" << i << "] = " << (*data_)[i] << "\n";
 	}
 	dumpfile << "}\n";
 	dumpfile.close();

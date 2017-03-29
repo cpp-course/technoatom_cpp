@@ -24,7 +24,7 @@ public:
 		value_type *ptr_;
 		Vector *vec_;
 	public:
-		Iterator() : ptr_(nullptr), vec_(nullptr) {}
+//		Iterator() : ptr_(nullptr), vec_(nullptr) {}
 		Iterator(value_type *ptr, Vector *vec) : ptr_(ptr), vec_(vec) {}
 		Iterator(const Iterator &that) : ptr_(that.ptr_), vec_(that.vec_) {}
 		Iterator(Iterator &&that) : ptr_(that.ptr_), vec_(that.vec_) {}
@@ -125,7 +125,14 @@ public:
 
 	};
 
+	//----------------------------------
+	//! Overload of operator new
+	//----------------------------------
 	void *operator new(size_t size);
+
+	//----------------------------------
+	//! Overload of placement operator new
+	//----------------------------------
 	void *operator new(size_t size, void* ptr);
 
 
@@ -256,6 +263,7 @@ public:
 	//! @return first element of Vector
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 	value_type First() const;
+
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 	//! Returnes last element of Vector
 	//! @return last element of Vector
@@ -273,6 +281,7 @@ public:
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 	void Erase(size_t index);
 	*/
+
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 	//! Delete all Vector's Elements
 	//! 
@@ -338,8 +347,7 @@ Vector<value_type>::Vector(const Vector<value_type> &that) :
 	size_(that.size_), capacity_(that.capacity_), data_(new value_type[that.capacity_])
 {
 	ASSERT_OK;
-	for (int i = 0; i < size_; ++i)
-		data_[i] = that.data_[i];
+	std::copy(another.Begin(), another.End(), Begin());
 }
 
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
@@ -372,8 +380,7 @@ Vector<value_type> &Vector<value_type>::operator=(Vector<value_type> &another)
 		size_ = another.size_;
 		capacity_ = another.capacity_;
 		data_ = new value_type[capacity_];
-		for (int i = 0; i < size_; ++i)
-			data_[i] = another.data_[i];
+		std::copy(another.Begin(), another.End(), Begin());
 	}
 	ASSERT_OK;
 	return *this;
