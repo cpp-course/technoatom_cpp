@@ -55,12 +55,26 @@
 
 int check_stack() {
 	Stack<int> mystack;
-	TEST(mystack.IsEmpty(), IsEmpty);
+	TEST(mystack.IsEmpty(), IsEmpty());
 	for (int i = 0; i < 100; ++i)
 		mystack.Push(i);
-	TEST(mystack.Size() == 100, Size);
+	TEST(mystack.Size() == 100, Size());
 	mystack.Pop();
-	TEST(mystack.Top() == 98, Top);
+	TEST(mystack.Top() == 98, Top());
+	return 42;
+}
+
+int check_vector()
+{
+	Vector<int> myvector;
+	TEST(myvector.IsEmpty(), IsEmpty());
+	for (int i = 0; i < 100; i++)
+		myvector.PushBack(i);
+	TEST(myvector.Size() == 100, Size());
+	myvector.PopBack();
+	TEST(myvector.Last() == 99, Last());
+	TEST(myvector.First() == 0, First());
+
 	return 42;
 }
 
@@ -68,6 +82,7 @@ int main()
 {
 	try {
 		check_stack();
+		check_vector();
 	}
 	catch (std::exception exc) {
 		std::cout << exc.what() << std::endl;

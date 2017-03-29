@@ -250,7 +250,7 @@ public:
 	//----------------------------------------------------------------
 	void Dump(std::string a) const;
 
-	/*
+	
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 	//! Returnes first element of Vector
 	//! @return first element of Vector
@@ -261,6 +261,7 @@ public:
 	//! @return last element of Vector
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 	value_type Last() const;
+	/*
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 	//! Insert element to Vector
 	//! @param data is an element to be pushed
@@ -272,6 +273,11 @@ public:
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 	void Erase(size_t index);
 	*/
+	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+	//! Delete all Vector's Elements
+	//! 
+	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+	void Clear();
 
 	//----------------------------------
 	//! Overload of operator ==
@@ -487,23 +493,31 @@ void Vector<value_type>::Reserve(size_t capacity)
 }
 */
 
-/*
+
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 value_type Vector<value_type>::First() const		//ааааа, как это сделать
 {
-Dump("First()");
-if ((!IsEmpty()) && (Ok())) return data_[0];
-else return POISON_VAL;
+	ASSERT_OK;
+	Dump("First()");
+	if ((!IsEmpty()) && (Ok())) return data_[0];
+	throw std::exception("Vector is Empty");
+	ASSERT_OK;
 }
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 value_type Vector<value_type>::Last() const
 {
-Dump("Last()");
-if ((!IsEmpty()) && (Ok())) return data_[size_-1];
-else return POISON_VAL;
+	ASSERT_OK;
+	Dump("Last()");
+	if ((!IsEmpty()) && (Ok()))
+	{
+		return data_[size_ - 1];
+		ASSERT_OK;
+	}
+	throw std::exception("Vector is Empty");
 }
+/*
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 void Vector<value_type>::Insert(Vector<value_type> data)
@@ -539,6 +553,28 @@ dumpfile.close();
 }
 }*/
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+template<typename value_type>
+void Vector<value_type>::Clear()
+{
+	ASSERT_OK;
+	if (!IsEmpty())
+	{
+		for (Vector<value_type>::Iterator it = Begin(); it != End();it++)
+		{
+			data_[it] = NULL;		//???????????????????
+		}
+		data_ = nullptr;
+		size_ = 0;
+		//capacity_ оставляем без изменений
+
+	}
+	else
+	{
+		throw std::exception("Vector is Empty");
+	}
+	
+}
+//----------------------------------
 template<typename value_type>
 void Vector<value_type>::Dump(std::string a) const
 {

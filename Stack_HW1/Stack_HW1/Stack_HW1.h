@@ -105,7 +105,8 @@ public:
 	//!
 	//! @return capacity of data block
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐------------------------------
-	size_t Capacity() const;
+
+	//size_t Capacity() const;
 
 	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐------------------------------
 	//! Checks Stack for emptyness
