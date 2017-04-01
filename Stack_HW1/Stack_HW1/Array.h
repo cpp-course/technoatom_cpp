@@ -59,13 +59,6 @@ public:
 	//----------------------------------
 	void Dump(std::string a) const;
 
-
-
-private:
-	size_t size_=0;
-	static const size_t capacity_=10;
-	value_type data_[capacity_];
-
 	//----------------------------------
 	//! Overload of operator[] (lvalue)
 	//----------------------------------
@@ -111,4 +104,9 @@ private:
 			}
 		}
 	}
+
+private:
+	size_t size_=0;
+	static const size_t capacity_=10;
+	value_type data_[capacity_];
 };

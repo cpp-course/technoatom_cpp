@@ -20,6 +20,9 @@ template<typename value_type>
 class Vector
 {
 public:
+	//-------------------------------
+	//! Iterator class for Vector
+	//-------------------------------
 	class Iterator : public std::iterator<std::random_access_iterator_tag, value_type>
 	{
 		value_type *ptr_;
@@ -50,7 +53,8 @@ public:
 		bool operator<(const Iterator &right)
 		{
 			return ptr_ < right.ptr_;
-		}/*
+		}
+		/*
 		bool operator<=(const Iterator &right)
 		{
 			return ptr_ <= right.ptr_ || ptr_ || !right.ptr_;
@@ -62,7 +66,8 @@ public:
 		bool operator>=(const Iterator &right)
 		{
 			return ptr_ >= right.ptr_ || !ptr_ || right.ptr_;
-		}*/
+		}
+		*/
 		Iterator &operator++()
 		{
 			if (++ptr_ > vec_->data_ + vec_->size_)
@@ -209,7 +214,6 @@ public:
 	//----------------------------------
 	value_type& operator[] (int index);
 
-
 	void PushBack(const value_type &value);
 	void PushBack(value_type &&value);
 	void PopBack();
@@ -316,14 +320,12 @@ template<typename value_type>
 Vector<value_type>::Vector() :
 	size_(0), capacity_(0), data_(nullptr) {}
 
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 Vector<value_type>::Vector(size_t size) :
 	size_(size), capacity_(size), data_(new value_type[size])
 {
 	memset(data_, 0, sizeof(value_type) * size_);
 }
-
 
 template<typename value_type>
 Vector<value_type>::Vector(size_t size, const value_type &value) :
@@ -342,7 +344,6 @@ Vector<value_type>::Vector(size_t size, value_type &&value) :
 		data_[i] = lval;
 }
 
-	//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 Vector<value_type>::Vector(const Vector<value_type> &that) :
 	size_(that.size_), capacity_(that.capacity_), data_(new value_type[that.capacity_])
@@ -351,7 +352,6 @@ Vector<value_type>::Vector(const Vector<value_type> &that) :
 	std::copy(that.Begin(), that.End(), Begin());
 }
 
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 Vector<value_type>::Vector(Vector<value_type> &&that) :
 	size_(that.size_), capacity_(that.capacity_), data_(that.data_)
@@ -359,7 +359,6 @@ Vector<value_type>::Vector(Vector<value_type> &&that) :
 	ASSERT_OK;
 	that.data_ = nullptr;
 }
-
 
 template<typename value_type>
 value_type& Vector<value_type>::operator[] (int index)
@@ -371,7 +370,6 @@ value_type& Vector<value_type>::operator[] (int index)
 	return data_[index];
 }
 
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 Vector<value_type> &Vector<value_type>::operator=(Vector<value_type> &another)
 {
@@ -387,7 +385,6 @@ Vector<value_type> &Vector<value_type>::operator=(Vector<value_type> &another)
 	return *this;
 }
 
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 Vector<value_type> &Vector<value_type>::operator=(Vector<value_type> &&another)
 {
@@ -432,20 +429,19 @@ void Vector<value_type>::PopBack()
 	ASSERT_OK;
 }
 
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 bool Vector<value_type>::Ok() const
 {
 	return size_ <= capacity_;
 }
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+
 template<typename value_type>
 Vector<value_type>::~Vector()
 {
 	if (data_)
 		delete[] data_;
 }
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+
 template<typename value_type>
 bool Vector<value_type>::IsEmpty() const
 {
@@ -501,8 +497,6 @@ void Vector<value_type>::Reserve(size_t capacity)
 }
 */
 
-
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
 value_type Vector<value_type>::First() const		//ааааа, как это сделать
 {
@@ -512,7 +506,7 @@ value_type Vector<value_type>::First() const		//ааааа, как это сде
 	throw std::exception("Vector is Empty");
 	ASSERT_OK;
 }
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+
 template<typename value_type>
 value_type Vector<value_type>::Last() const
 {
@@ -525,6 +519,7 @@ value_type Vector<value_type>::Last() const
 	}
 	throw std::exception("Vector is Empty");
 }
+
 /*
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 template<typename value_type>
@@ -539,7 +534,7 @@ if (size_ == capacity_) Expand();
 data_[size_] = data;
 size_++;
 }
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+
 template<typename value_type>
 void Vector<value_type>::Erase(size_t index)
 {
@@ -560,7 +555,7 @@ dumpfile << "ERROR! Can not delete element by index " << index << "!\n";
 dumpfile.close();
 }
 }*/
-//‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+
 template<typename value_type>
 void Vector<value_type>::Clear()
 {
@@ -582,7 +577,7 @@ void Vector<value_type>::Clear()
 	}
 	
 }
-//----------------------------------
+
 template<typename value_type>
 void Vector<value_type>::Dump(std::string a) const
 {
@@ -594,7 +589,7 @@ void Vector<value_type>::Dump(std::string a) const
 	}
 	dumpfile << "--------------------------------------------------------------\nDump() for class Vector\n";
 	dumpfile << "Function " << a << "\n";
-	std::time_t result = std::time(NULL);
+	//std::time_t result = std::time(NULL);
 	//dumpfile << std::asctime(std::localtime(&result));
 	dumpfile << "\n\n";
 	dumpfile << "Vector " << " ok(" << Ok() << ")\n";
@@ -619,8 +614,6 @@ void* Vector<value_type>::operator new(size_t size, void* ptr)
 
 	return ptr;
 }
-
-
 
 /*
 

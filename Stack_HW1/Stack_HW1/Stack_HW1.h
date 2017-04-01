@@ -255,9 +255,9 @@ void Stack<value_type>::Dump(const char* qwe) const
 		return;
 	}
 	dumpfile << "--------------------------------------------------------------\nNew call of Dump()\n";
-	std::time_t result = std::time(NULL);
-	dumpfile << std::asctime(std::localtime(&result));
-	dumpfile << "\n\n";
+	//std::time_t result = std::time(NULL);
+	//dumpfile << std::asctime(std::localtime(&result));
+	dumpfile << "\n";
 	dumpfile << "Stack " << " ok(" << Ok() << ")\n";
 	dumpfile << "size_ = " << size_ << "\n";
 	dumpfile << "capacity_ = " << data_->Capacity() << "\n";

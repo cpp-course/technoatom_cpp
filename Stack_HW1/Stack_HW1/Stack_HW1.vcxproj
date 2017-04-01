@@ -27,13 +27,15 @@
     <ClInclude Include="SmartPointers.h" />
     <ClInclude Include="Stack_HW1.h" />
     <ClInclude Include="Vector.h" />
-    <ClInclude Include="Vector_Iterator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Stack_HW1.cpp" />
     <ClCompile Include="TestStack.cpp" />
     <ClCompile Include="Vector.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F09487BA-9463-4036-A107-F9E9A6B120B4}</ProjectGuid>

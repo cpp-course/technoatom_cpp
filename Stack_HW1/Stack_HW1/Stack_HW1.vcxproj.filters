@@ -21,9 +21,6 @@
     <ClInclude Include="Vector.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Vector_Iterator.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Header.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -56,5 +53,8 @@
     <ClCompile Include="TestStack.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
