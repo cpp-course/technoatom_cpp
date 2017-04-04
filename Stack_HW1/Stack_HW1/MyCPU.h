@@ -1,6 +1,6 @@
 //------------------------------
 //! @file MyCPU.h
-//! Works with scripts
+//! Works with bitecode
 //! @author Pasha2La
 //! @author Kirill Shirokov
 //! @data 2017
