@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Array.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="MyCPU.h" />
     <ClInclude Include="Sort.h" />
     <ClInclude Include="MyException.h" />
     <ClInclude Include="MyPrint.h" />
