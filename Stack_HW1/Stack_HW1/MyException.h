@@ -15,7 +15,6 @@ public:
 	MyException(int code, char* mesg, char* file, int line) :code_(code), mesg_(mesg), file_(file), line_(line) {};
 	MyException(const MyException &E) = delete;	//запрещаем кк
 	~MyException() {};
-private:
 	//! code of exception
 	int code_;
 	//! message to user
