@@ -69,7 +69,7 @@ void Translator::FirstIter()
 			if (0 <= (index = atoi(str + 1)) && index < max_label_)
 				label_[index] = counter;
 			else
-				throw MyException(3, "Wrong label", __FILE__, __LINE__);
+				throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		else
 			++counter;
 	}
@@ -103,62 +103,81 @@ const char *Translator::StrToComCode(std::string buff)
 			index = atoi(buff.substr(4).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
 				return ((std::string)"9" + itoa(label_[index], tmp, 10) + '\n').c_str();
-			throw MyException(3, "Wrong label", __FILE__, __LINE__);
+			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "je ")
 		{
 			index = atoi(buff.substr(3).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
 				return ((std::string)"A" + itoa(label_[index], tmp, 10) + '\n').c_str();
-			throw MyException(3, "Wrong label", __FILE__, __LINE__);
+			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "ja ")
 		{
 			index = atoi(buff.substr(3).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
 				return ((std::string)"B" + itoa(label_[index], tmp, 10) + '\n').c_str();
-			throw MyException(3, "Wrong label", __FILE__, __LINE__);
+			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jb ")
 		{
 			index = atoi(buff.substr(3).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
 				return ((std::string)"C" + itoa(label_[index], tmp, 10) + '\n').c_str();
-			throw MyException(3, "Wrong label", __FILE__, __LINE__);
+			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jae")
 		{
 			index = atoi(buff.substr(4).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
 				return ((std::string)"D" + itoa(label_[index], tmp, 10) + '\n').c_str();
-			throw MyException(3, "Wrong label", __FILE__, __LINE__);
+			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jbe")
 		{
 			index = atoi(buff.substr(4).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
 				return ((std::string)"E" + itoa(label_[index], tmp, 10) + '\n').c_str();
-			throw MyException(3, "Wrong label", __FILE__, __LINE__);
+			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jne")
 		{
 			index = atoi(buff.substr(4).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
 				return ((std::string)"F" + itoa(label_[index], tmp, 10) + '\n').c_str();
-			throw MyException(3, "Wrong label", __FILE__, __LINE__);
+			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		throw MyException(4, "Wrong command", __FILE__, __LINE__);
 	}
+	if (buff.substr(0, 4) == "call")
+	{
+		char *tmp;
+		int index = atoi(buff.substr(5).c_str());
+		if (0 <= index && index < max_label_ && label_[index] != -1)
+			return ((std::string)"7" + itoa(label_[index], tmp, 10) + '\n').c_str();
+		throw MyException(3, "Wrong argument", __FILE__, __LINE__);
+	}
+	if (buff.substr(0, 3) == "pop")
+	{
+		//корректность номера регистра остается на совести автора скрипта
+		//потому что мы не знаем, сколько их в процессоре
+		return ((std::string)"2" + buff.substr(5) + '\n').c_str();
+	}
 	if (buff.substr(0, 4) == "push")
 	{
-		if ()
+		if (buff.substr(5, 1) == "x")
+			//корректность номера регистра остается на совести автора скрипта
+			//потому что мы не знаем, сколько их в процессоре
+			return ((std::string)"1" + buff.substr(6) + '\n').c_str();
+		else
+		{
+			return ((std::string)"0" + buff.substr(5) + '\n').c_str();
+		}
+		throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 	}
 }
 
 
-//------------------------------
-//! void to translate commands from scripts
-//------------------------------
 void Translator::SecondIter()
 {
 	char *buff;
@@ -170,7 +189,6 @@ void Translator::SecondIter()
 	{
 		fin >> buff;
 		StrToComCode(buff);
-		
 	}
 
 }
