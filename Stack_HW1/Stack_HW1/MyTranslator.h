@@ -188,7 +188,7 @@ void Translator::SecondIter()
 	while (!fin.eof())
 	{
 		fin >> buff;
-		StrToComCode(buff);
+		fout << StrToComCode(buff);
 	}
 
 }
