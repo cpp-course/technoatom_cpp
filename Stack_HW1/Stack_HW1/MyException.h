@@ -13,7 +13,6 @@ class MyException : public std::exception
 public:
 	MyException(): code_(100500), mesg_("Smth went wrong"), file_("NULL"), line_(NULL) {};
 	MyException(int code, char* mesg, char* file, int line) :code_(code), mesg_(mesg), file_(file), line_(line) {};
-	MyException(const MyException &E) = delete;	//запрещаем кк
 	~MyException() {};
 	//! code of exception
 	int code_;

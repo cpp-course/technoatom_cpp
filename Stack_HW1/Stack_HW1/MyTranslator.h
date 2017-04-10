@@ -31,6 +31,9 @@ public:
 	{
 		memset(label_, -1, max_label_ * sizeof(int));
 	}
+	//------------------------------
+	//! void to make translation
+	//------------------------------
 	void Make() { FirstIter(); SecondIter(); }
 
 private:
@@ -39,7 +42,13 @@ private:
 	const char* output_;
 	int label_[max_label_];
 	const char *StrToComCode(std::string);
+	//------------------------------
+	//! makes first translation and fills array of labels
+	//------------------------------
 	inline void FirstIter();
+	//------------------------------
+	//! makes second translation creates file with script to CPU
+	//------------------------------
 	inline void SecondIter();
 };
 
