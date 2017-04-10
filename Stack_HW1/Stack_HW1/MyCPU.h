@@ -9,71 +9,63 @@
 #include"Stack_HW1.h"
 #include"Array.h"
 #include"MyException.h"
+#include"SmartPointers.h"
 
-template <typename value_type>
 class MyCPU
 {
 public:
 	MyCPU();
-	void SetRegister(value_type data, int index);
-	value_type GetRerister(int index);
+	void SetRegister(int data, int index);
+	int GetRerister(int index);
 	void SetLabel(int data, int index);
-	value_type GetLabel(int index);
-	~MyCPU();
+	int GetLabel(int index);
 private:
 	//! Registers for CPU
-	value_type register_[100];
+	int register_[100];
 	//! Stack for CPU
-	Stack<value_type> stack_;
+	shared_ptr<Stack<int> > stack_;
 	//! Vector of labels for jumps
-	Vector<int> label_;
+	shared_ptr<Vector<int> > label_;
 	//! Stack of calls
-	Stack<int> callstack_;
+	shared_ptr<Stack<int> > callstack_;
 };
 
-template <typename value_type>
-MyCPU<value_type>::MyCPU()
+
+MyCPU::MyCPU()
 {
 	for (int i = 0;i < 100;i++)
 	{
-		register_[i] = NAN;
+		register_[i] = 0;
 	}
-	stack_ = new Stack<value_type>;
-	label_ = new Vector<value_type>;
+	stack_ = new Stack<int>;
+	label_ = new Vector<int>;
 	callstack_ = new Stack<int>;
 }
-template <typename value_type>
-void MyCPU<value_type>::SetRegister(value_type data, int index)
+
+void MyCPU::SetRegister(int data, int index)
 {
 	if (index < 0 || index>99)
 		throw MyException(1, "Bad index!", __FILE__, __LINE__);		//так??
 	register_[index] = data;
 }
-template <typename value_type>
-value_type MyCPU<value_type>::GetRerister(int index)
+
+int MyCPU::GetRerister(int index)
 {
 	if (index < 0 || index>99)
 		throw MyException(1, "Bad index!", __FILE__, __LINE__);		//так??
 	return register_[index];
 }
-template <typename value_type>
-void MyCPU<value_type>::SetLabel(int data, int index)
+
+void MyCPU::SetLabel(int data, int index)
 {
-	if (index < 0 || index>=label_.size_)
+	if (index < 0 || index>=label_->Size())
 		throw MyException(1, "Bad index!", __FILE__, __LINE__);		//так??
 	label_[index] = data;
 }
-template <typename value_type>
-value_type MyCPU<value_type>::GetLabel(int index)
+
+int MyCPU::GetLabel(int index)
 {
-	if (index < 0 || index >= label_.size_)
+	if (index < 0 || index >= label_->Size())
 		throw MyException(1, "Bad index!", __FILE__, __LINE__);		//так??
 	return label_[index];
-}
-template <typename value_type>
-MyCPU<value_type>::~MyCPU()
-{
-	delete stack_;
-	delete label_;
-	delete callstack_;
 }
