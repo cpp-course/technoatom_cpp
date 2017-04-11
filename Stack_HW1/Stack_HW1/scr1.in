@@ -1,0 +1,4 @@
+push x0
+push 6
+add
+pop x1

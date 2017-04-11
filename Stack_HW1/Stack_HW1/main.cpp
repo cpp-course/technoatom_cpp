@@ -45,6 +45,7 @@
 #include "Sort.h"
 #include <algorithm>
 #include <vector>
+#include "MyTranslator.h"
 
 #define TEST(what, func)								\
 	if (!what)											\
@@ -173,11 +174,15 @@ void check_auto_ptr()
 int main()
 {
 	try {
+		Translator mytr9("scr1.in","scr1.out");
+		mytr9.Make();
+
+		/*
 		check_stack();
 		check_vector();
 		check_iterators();
 		check_shared_ptr();
-		check_auto_ptr();
+		check_auto_ptr();*/
 	}
 	catch (std::exception exc) {
 		std::cout << exc.what() << std::endl;

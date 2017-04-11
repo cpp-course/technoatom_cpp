@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -16,3 +18,4 @@
 		Dump("");					\
 		assert(!"stack is ok");		\
 	}
+

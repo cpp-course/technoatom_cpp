@@ -6,22 +6,36 @@
 //! @data 2017
 //------------------------------
 
-#include<fstream>
-#include<exception>
-#include<fstream>
+#include "Header.h"
 #include"MyException.h"
-#include<string>
 
 
-enum ComCode
+char *myitoa(int i)
 {
-	PUSH, PUSH1,
-	POP,
-	ADD, SUB,
-	MUL, DIV,
-	CALL, RET,
-	JMP, JE, JA, JB, JAE, JBE, JNE
-};
+	int digs = 0, x = i;
+	bool fl = false;
+	if (i < 0)
+	{
+		digs++;
+		i = -i;
+		fl = true;
+	}
+	while (x != 0)
+	{
+		digs++;
+		x /= 10;
+	}
+	char *a = new char[digs + 1];
+	char *b = a;
+	while (i != 0)
+	{
+		x = i % 10;
+		i /= 10;
+		*b++ = x + '0';
+	}
+	*b = '\0';
+	return a;
+}
 
 
 class Translator
@@ -41,7 +55,7 @@ private:
 	const char* input_;
 	const char* output_;
 	int label_[max_label_];
-	const char *StrToComCode(std::string);
+	std::string StrToComCode(std::string);
 	//------------------------------
 	//! makes first translation and fills array of labels
 	//------------------------------
@@ -60,13 +74,13 @@ void Translator::FirstIter()
 	if (!fin.is_open())
 		throw MyException(2, "Cannot open file", __FILE__, __LINE__);
 	size_t counter = 0;
-	char *str;
+	std::string str;
 	int index;
 	while (!fin.eof())
 	{
 		fin >> str;
-		if (*str == ':')
-			if (0 <= (index = atoi(str + 1)) && index < max_label_)
+		if (str[0] == ':')
+			if (0 <= (index = atoi(str.c_str() + 1)) && index < max_label_)
 				label_[index] = counter;
 			else
 				throw MyException(3, "Wrong argument", __FILE__, __LINE__);
@@ -76,7 +90,7 @@ void Translator::FirstIter()
 	fin.close();
 }
 
-const char *Translator::StrToComCode(std::string buff)
+std::string Translator::StrToComCode(std::string buff)
 {
 	size_t len = buff.length();
 	if (len <= 3)
@@ -102,49 +116,49 @@ const char *Translator::StrToComCode(std::string buff)
 		{
 			index = atoi(buff.substr(4).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"9" + itoa(label_[index], tmp, 10) + '\n').c_str();
+				return ((std::string)"9" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "je ")
 		{
 			index = atoi(buff.substr(3).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"A" + itoa(label_[index], tmp, 10) + '\n').c_str();
+				return ((std::string)"A" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "ja ")
 		{
 			index = atoi(buff.substr(3).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"B" + itoa(label_[index], tmp, 10) + '\n').c_str();
+				return ((std::string)"B" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jb ")
 		{
 			index = atoi(buff.substr(3).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"C" + itoa(label_[index], tmp, 10) + '\n').c_str();
+				return ((std::string)"C" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jae")
 		{
 			index = atoi(buff.substr(4).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"D" + itoa(label_[index], tmp, 10) + '\n').c_str();
+				return ((std::string)"D" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jbe")
 		{
 			index = atoi(buff.substr(4).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"E" + itoa(label_[index], tmp, 10) + '\n').c_str();
+				return ((std::string)"E" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jne")
 		{
 			index = atoi(buff.substr(4).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"F" + itoa(label_[index], tmp, 10) + '\n').c_str();
+				return ((std::string)"F" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		throw MyException(4, "Wrong command", __FILE__, __LINE__);
@@ -154,41 +168,45 @@ const char *Translator::StrToComCode(std::string buff)
 		char *tmp;
 		int index = atoi(buff.substr(5).c_str());
 		if (0 <= index && index < max_label_ && label_[index] != -1)
-			return ((std::string)"7" + itoa(label_[index], tmp, 10) + '\n').c_str();
+			return ((std::string)"7" + myitoa(label_[index]) + '\n');
 		throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 	}
 	if (buff.substr(0, 3) == "pop")
 	{
 		//корректность номера регистра остается на совести автора скрипта
 		//потому что мы не знаем, сколько их в процессоре
-		return ((std::string)"2" + buff.substr(5) + '\n').c_str();
+		return ((std::string)"2" + buff.substr(5) + '\n');
 	}
 	if (buff.substr(0, 4) == "push")
 	{
 		if (buff.substr(5, 1) == "x")
 			//корректность номера регистра остается на совести автора скрипта
 			//потому что мы не знаем, сколько их в процессоре
-			return ((std::string)"1" + buff.substr(6) + '\n').c_str();
+			return ((std::string)"1" + buff.substr(6) + '\n');
 		else
 		{
-			return ((std::string)"0" + buff.substr(5) + '\n').c_str();
+			return ((std::string)"0" + buff.substr(5) + '\n');
 		}
 		throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 	}
+	throw MyException(4, "Wrong command", __FILE__, __LINE__);
 }
 
 
 void Translator::SecondIter()
 {
-	char *buff;
+	std::string buff;
 	std::ifstream fin(input_);
 	std::ofstream fout(output_);
 	if (!fin.is_open() || !fout.is_open())
 		throw MyException(2, "Cannot open file", __FILE__, __LINE__);
+	std::string lstr;
 	while (!fin.eof())
 	{
-		fin >> buff;
-		fout << StrToComCode(buff);
+		std::getline(fin, buff);
+		lstr = StrToComCode(buff);
+		fout << lstr;
 	}
-
+	fin.close();
+	fout.close();
 }
