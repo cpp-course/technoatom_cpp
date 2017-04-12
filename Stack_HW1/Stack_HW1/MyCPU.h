@@ -19,6 +19,7 @@ public:
 	void SetRegister(int data, int index);
 	int GetRerister(int index);
 	void Execute(char *name);
+	void Mkarr(char *name, Vector<int> &vect);
 private:
 	//! Registers for CPU
 	int register_[100];
@@ -53,7 +54,7 @@ int MyCPU::GetRerister(int index)
 	return register_[index];
 }
 
-void MyCPU::Execute(char *name)
+void MyCPU::Mkarr(char *name, Vector<int> &vect)
 {
 	std::ifstream fin(name);
 	if (!fin.is_open())
@@ -64,6 +65,21 @@ void MyCPU::Execute(char *name)
 	while (!fin.eof())
 	{
 		std::getline(fin, buff);
+		vect.PushBack(atoi(buff.substr(0, 1).c_str()));
+		if (buff[0] == '3' || buff[0] == '4' || buff[0] == '5' || buff[0] == '6' || buff[0] == '7' || buff[0] == '8')
+			break;
+		vect.PushBack(atoi(buff.substr(1).c_str()));
+	}
+}
+
+void MyCPU::Execute(char *name)
+{
+	int buff;
+	Vector<int> *source = new Vector<int>;
+	//Mkarr(name, source);
+	for (Vector<int>::Iterator it = source->Begin(); it != source->End(); ++it)
+	{
+
 		int index = atoi(buff.substr(1).c_str());
 		switch (buff[0])
 		{
