@@ -91,29 +91,44 @@ void MyCPU::Execute(char *name)
 			stack_->Pop();
 			stack_->Push(b - a);	//a-b or b-a?????????????
 			break;
-		case '5':
+		case '5':	//mul
+			int a = stack_->Top();
+			stack_->Pop();
+			int b = stack_->Top();
+			stack_->Pop();
+			stack_->Push(a*b);
+			break;
+		case '6':	//div
+			int a = stack_->Top();
+			stack_->Pop();
+			int b = stack_->Top();
+			stack_->Pop();
+			stack_->Push((int)(b/a));//b/a или a/b????
+			break;
+		case '7':	//ret
+			//
+			//
+			//
+			break;
+		case '8':	//call
+			break;
+		case '9':	//jmp
 
-		case '6':
-
-		case '7':
-
-		case '8':
-
-		case '9':
-
-		case 'a':
-
-		case 'b':
-
-		case 'c':
-
-		case 'd':
-
-		case 'e':
-
-		case 'f':
-
+			break;
+		case 'a':	//je
+			break;
+		case 'b':	//ja
+			break;
+		case 'c':	//jb
+			break;
+		case 'd':	//jae
+			break;
+		case 'e':	//jbe
+			break;
+		case 'f':	//jne
+			break;
 		default:
+			throw MyException(4, "Execution error", __FILE__, __LINE__);
 			break;
 		}
 	}
