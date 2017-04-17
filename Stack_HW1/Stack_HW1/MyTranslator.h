@@ -5,37 +5,10 @@
 //! @author Kirill Shirokov
 //! @data 2017
 //------------------------------
+#pragma once
 
 #include "Header.h"
 #include"MyException.h"
-
-
-char *myitoa(int i)
-{
-	int digs = 0, x = i;
-	bool fl = false;
-	if (i < 0)
-	{
-		digs++;
-		i = -i;
-		fl = true;
-	}
-	while (x != 0)
-	{
-		digs++;
-		x /= 10;
-	}
-	char *a = new char[digs + 1];
-	char *b = a;
-	while (i != 0)
-	{
-		x = i % 10;
-		i /= 10;
-		*b++ = x + '0';
-	}
-	*b = '\0';
-	return a;
-}
 
 
 class Translator
@@ -123,42 +96,42 @@ std::string Translator::StrToComCode(std::string buff)
 		{
 			index = atoi(buff.substr(3).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"A" + myitoa(label_[index]) + '\n');
+				return ((std::string)"a" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "ja ")
 		{
 			index = atoi(buff.substr(3).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"B" + myitoa(label_[index]) + '\n');
+				return ((std::string)"b" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jb ")
 		{
 			index = atoi(buff.substr(3).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"C" + myitoa(label_[index]) + '\n');
+				return ((std::string)"c" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jae")
 		{
 			index = atoi(buff.substr(4).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"D" + myitoa(label_[index]) + '\n');
+				return ((std::string)"d" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jbe")
 		{
 			index = atoi(buff.substr(4).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"E" + myitoa(label_[index]) + '\n');
+				return ((std::string)"e" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		if (sub == "jne")
 		{
 			index = atoi(buff.substr(4).c_str());
 			if (0 <= index && index < max_label_ && label_[index] != -1)
-				return ((std::string)"F" + myitoa(label_[index]) + '\n');
+				return ((std::string)"f" + myitoa(label_[index]) + '\n');
 			throw MyException(3, "Wrong argument", __FILE__, __LINE__);
 		}
 		throw MyException(4, "Wrong command", __FILE__, __LINE__);
@@ -204,8 +177,10 @@ void Translator::SecondIter()
 	while (!fin.eof())
 	{
 		std::getline(fin, buff);
-		lstr = StrToComCode(buff);
-		fout << lstr;
+		if (buff[0] != ':') {
+			lstr = StrToComCode(buff);
+			fout << lstr;
+		}
 	}
 	fin.close();
 	fout.close();

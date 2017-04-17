@@ -46,6 +46,7 @@
 #include <algorithm>
 #include <vector>
 #include "MyTranslator.h"
+#include "MyCPU.h"
 
 #define TEST(what, func)								\
 	if (!what)											\
@@ -174,9 +175,12 @@ void check_auto_ptr()
 int main()
 {
 	try {
-		Translator mytr9("scr1.in","scr1.out");
-		mytr9.Make();
-
+		Translator mytr0("scr1.in","scr1.out");
+		mytr0.Make();
+		MyCPU mycpu0;
+		mycpu0.SetRegister(21, 0);
+		mycpu0.Execute("scr1.out");
+		std::cout << mycpu0.GetRegister(0);
 		/*
 		check_stack();
 		check_vector();

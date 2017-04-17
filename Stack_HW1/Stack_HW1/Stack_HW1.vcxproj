@@ -39,6 +39,7 @@
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
     <None Include="scr1.in" />
+    <None Include="scr1.out" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F09487BA-9463-4036-A107-F9E9A6B120B4}</ProjectGuid>

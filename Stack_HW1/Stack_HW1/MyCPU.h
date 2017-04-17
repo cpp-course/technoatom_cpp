@@ -6,6 +6,8 @@
 //! @data 2017
 //------------------------------
 
+#pragma once
+
 #include"Stack_HW1.h"
 #include"Array.h"
 #include"MyException.h"
@@ -16,8 +18,9 @@ class MyCPU
 {
 public:
 	MyCPU();
+	~MyCPU();
 	void SetRegister(int data, int index);
-	int GetRerister(int index);
+	int GetRegister(int index);
 	//! Executes translated scripts
 	void Execute(char *name);
 	//! void to make array of code for CPU
@@ -26,9 +29,9 @@ private:
 	//! Registers for CPU
 	int register_[100];
 	//! Stack for CPU
-	shared_ptr<Stack<int> > stack_;
+	Stack<int> *stack_;
 	//! Stack of calls
-	shared_ptr<Stack<int> > callstack_;
+	Stack<int> *callstack_;
 };
 
 
@@ -42,6 +45,12 @@ MyCPU::MyCPU()
 	callstack_ = new Stack<int>;
 }
 
+MyCPU::~MyCPU()
+{
+	delete stack_;
+	delete callstack_;
+}
+
 void MyCPU::SetRegister(int data, int index)
 {
 	if (index < 0 || index>99)
@@ -49,7 +58,7 @@ void MyCPU::SetRegister(int data, int index)
 	register_[index] = data;
 }
 
-int MyCPU::GetRerister(int index)
+int MyCPU::GetRegister(int index)
 {
 	if (index < 0 || index>99)
 		throw MyException(1, "Bad index!", __FILE__, __LINE__);
@@ -68,6 +77,8 @@ void MyCPU::Mkarr(char *name, Vector<int> &vect)
 	{
 		std::getline(fin, buff);
 		//кидаем код команды в массив
+		if (buff == "")
+			return;
 		switch (buff[0])
 		{
 		case 'a':
@@ -97,120 +108,119 @@ void MyCPU::Mkarr(char *name, Vector<int> &vect)
 		if (!(buff[0] == '3' || buff[0] == '4' || buff[0] == '5' || buff[0] == '6' || buff[0] == '8'))
 			vect.PushBack(atoi(buff.substr(1).c_str()));
 	}
+	fin.close();
 }
 
 void MyCPU::Execute(char *name)
 {
 	int buff;
-	Vector<int> *source = new Vector<int>;
+	Vector<int> source;
 	//
-	//Mkarr(name, source);
-	for (int i = 0; i < source->Size();i++)
+	Mkarr(name, source);
+	int a, b;
+	for (int i = 0; i < source.Size();i++)
 	{
-		buff = source->operator[](i);
+		buff = source[i];
 		switch (buff)
 		{
 		case 0:	//push for int
 			i++;
-			stack_->Push(source->operator[](i));
+			stack_->Push(source[i]);
 			break;
 		case 1:	//push for reg
 			i++;
-			register_[source->operator[](i)] = stack_->Top();
-			stack_->Pop();
+			stack_->Push(register_[source[i]]);
 			break;
 		case 2:	//pop for reg
 			i++;
-			stack_->Push(register_[source->operator[](i)]);
+			register_[source[i]] = stack_->Top();
+			stack_->Pop();
 			break;
 		case 3:	//add
-			int a = stack_->Top();
+			a = stack_->Top();
 			stack_->Pop();
-			int b = stack_->Top();
+			b = stack_->Top();
 			stack_->Pop();
 			stack_->Push(a+b);
 			break;
 		case 4:	//sub
-			int a = stack_->Top();
+			a = stack_->Top();
 			stack_->Pop();
-			int b = stack_->Top();
+			b = stack_->Top();
 			stack_->Pop();
-			stack_->Push(b - a);	//a-b or b-a?????????????
+			stack_->Push(b - a);
 			break;
 		case 5:	//mul
-			int a = stack_->Top();
+			a = stack_->Top();
 			stack_->Pop();
-			int b = stack_->Top();
+			b = stack_->Top();
 			stack_->Pop();
 			stack_->Push(a*b);
 			break;
 		case 6:	//div
-			int a = stack_->Top();
+			a = stack_->Top();
 			stack_->Pop();
-			int b = stack_->Top();
+			b = stack_->Top();
 			stack_->Pop();
-			stack_->Push((int)(b/a));//b/a или a/b????
+			stack_->Push(b/a);
+		case 7:	//call
+			callstack_->Push(i + 2);
+			i = source[++i] - 1;
 			break;
-		case 7:	//ret
-			//
-			//
-			//
-			break;
-		case 8:	//call
-			//
-			//
+		case 8:	//ret
+			i = callstack_->Top() - 1;
+			callstack_->Pop();
 			break;
 		case 9:	//jmp
-			i++;
-			i = source->operator[](i);
+			i = source[++i] - 1;
 			break;
 		case 10:	//je
-			int a = stack_->Top();
+			a = stack_->Top();
 			stack_->Pop();
-			int b = stack_->Top();
+			b = stack_->Top();
 			stack_->Pop();
-			i++;
-			if (a == b) i = source->operator[](i);
+			if (a == b) i = source[++i] - 1;
+			else i++;
 			break;
 		case 11:	//ja
-			int a = stack_->Top();
+			a = stack_->Top();
 			stack_->Pop();
-			int b = stack_->Top();
+			b = stack_->Top();
 			stack_->Pop();
 			i++;
-			if (a > b) i = source->operator[](i);
+			if (a > b) i = source[i]-1;
 			break;
 		case 12:	//jb
-			int a = stack_->Top();
+			a = stack_->Top();
 			stack_->Pop();
-			int b = stack_->Top();
+			b = stack_->Top();
 			stack_->Pop();
 			i++;
-			if (a < b) i = source->operator[](i);
+			if (a < b) i = source[i]-1;
 			break;
 		case 13:	//jae
-			int a = stack_->Top();
+			a = stack_->Top();
 			stack_->Pop();
-			int b = stack_->Top();
+			b = stack_->Top();
 			stack_->Pop();
 			i++;
-			if (a >= b) i = source->operator[](i);
+			if (a >= b) i = source[i]-1;
 			break;
 		case 14:	//jbe
-			int a = stack_->Top();
+			a = stack_->Top();
 			stack_->Pop();
-			int b = stack_->Top();
+			b = stack_->Top();
 			stack_->Pop();
 			i++;
-			if (a <= b) i = source->operator[](i);
+			if (a <= b) i = source[i]-1;
 			break;
 		case 15:	//jne
-			int a = stack_->Top();
+			a = stack_->Top();
 			stack_->Pop();
-			int b = stack_->Top();
+			b = stack_->Top();
 			stack_->Pop();
 			i++;
-			if (a != b) i = source->operator[](i);
+			if (a != b) i = source[i]-1;
 			break;
 		default:
 			throw MyException(4, "Execution error", __FILE__, __LINE__);

@@ -1,4 +1,4 @@
-﻿
+﻿#pragma once
 #define _CRT_SECURE_NO_WARNINGS
 //‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
 //! @file Stack_HW1.h
