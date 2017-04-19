@@ -32,11 +32,19 @@ public:
 	DynamicObject(size_t x, size_t y, size_t w, size_t h, sf::String filename, size_t speed):GameObject(x, y, w, h, filename)
 	{
 		speed_ = speed;
+		y0_ = y;
+		y0speed_ = 5;
+		yspeed_ = 0;
+		ffa_ = 0.4;
 		direction_ = 0;
 	}
 	virtual void Move(float time) = 0;
 	size_t direction_;
-	size_t speed_;
+	float speed_;
+	float y0speed_;
+	size_t y0_;
+	float yspeed_;
+	float ffa_;
 };
 
 class StaticObject : public GameObject
@@ -73,7 +81,16 @@ public:
 	}
 	void Jump() override
 	{
-
+		if (y_ == y0_ && yspeed_ == 0)
+			yspeed_ = y0speed_;
+		y_ -= yspeed_;
+		yspeed_ -= ffa_;
+		if (y_ >= y0_)
+		{
+			y_ = y0_;
+			yspeed_ = 0;
+		}
+		sprite_.setPosition(x_, y_);
 	}
 	void Move(float time) override
 	{
@@ -86,6 +103,7 @@ public:
 			x_ += speed_*time;
 			break;
 		}
+		direction_ = -1;
 		sprite_.setPosition(x_, y_);
 	}
 	void Draw() override
