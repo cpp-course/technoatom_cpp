@@ -16,7 +16,7 @@ int main()
 	//wizard.setTexture(wiz);
 	sf::RectangleShape background(sf::Vector2f(800, 600));
 	background.setFillColor(sf::Color::White);
-	Hero *player = new Wizard(400, myfloor, 150, 150, "Wizard.png", 1, 5, 2, 10);
+	Hero *player = new Wizard(400, myfloor, 128, 128, "Wizard.png", 2, 5, 2, 10);
 
 	while (window.isOpen())
 	{

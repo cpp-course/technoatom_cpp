@@ -33,9 +33,9 @@ public:
 	{
 		speed_ = speed;
 		y0_ = y;
-		y0speed_ = 5;
+		y0speed_ = 20;
 		yspeed_ = 0;
-		ffa_ = 0.4;
+		ffa_ = 2.5;
 		direction_ = 0;
 	}
 	virtual void Move(float time) = 0;
