@@ -229,3 +229,5 @@ void MyCPU::Execute(char *name)
 	}
 
 }
+
+// { 'add', ARGS_COUNT, CALLBACK, COMMAND_CODE}
