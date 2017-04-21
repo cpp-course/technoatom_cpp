@@ -16,7 +16,7 @@ int main()
 	//wizard.setTexture(wiz);
 	sf::RectangleShape background(sf::Vector2f(800, 600));
 	background.setFillColor(sf::Color::White);
-	Hero *player = new Wizard(400, myfloor, 128, 128, "Wizard.png", 2, 5, 2, 10);
+	Hero *player = new Wizard(400, myfloor, 128, 128, "Wizard.png", 5, 5, 2, 10);
 
 	while (window.isOpen())
 	{
@@ -31,13 +31,13 @@ int main()
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			player->direction_ = 1;
-			player->Move(time);
+			player->setDirection(RIGHT);
+			player->Move();
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			player->direction_ = 0;
-			player->Move(time);
+			player->setDirection(LEFT);
+			player->Move();
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || player->y_ < myfloor)
 		{
@@ -49,7 +49,7 @@ int main()
 		//window.draw(wizard);
 		window.display();
 		//wizard.move(sf::Vector2f(2, 0));
-		Sleep(50);
+		Sleep(10);
 	}
 	delete player;
 	return 0;

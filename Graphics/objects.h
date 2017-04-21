@@ -1,50 +1,58 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <string>
+#include "Constants.h"
 
 class GameObject
 {
 public:
-	GameObject(size_t x, size_t y, size_t w, size_t h, sf::String filename)
+	GameObject(sf::Vector2f pos, sf::Vector2i size, sf::String filename)
 	{
-		x_ = x;
-		y_ = y;
-		w_ = w;
-		h_ = h;
+		size_ = size;
+		pos_.x = pos.x + size_.x / 2;
+		pos_.y = pos.y + size_.y / 2;
 		image_.loadFromFile("Textures/" + filename);
 		texture_.loadFromImage(image_);
 		sprite_.setTexture(texture_);
-		sprite_.setTextureRect(sf::IntRect(0, 0, w_, h_));
-		sprite_.setPosition(x_, y_);
+		sprite_.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), size_));
+		sprite_.setOrigin(size_.x / 2, size.y / 2);
+		sprite_.setPosition(pos_);
 	}
 	virtual void Draw() = 0;
+protected:
 	sf::String filename_;
 	sf::Image image_;
 	sf::Texture texture_;
 	sf::Sprite sprite_;
-	size_t x_, y_;	//! coords of an object
-	size_t w_, h_;	//! params of an object
+	sf::Vector2f pos_;	//! coords of an object
+	sf::Vector2i size_;	//! params of an object
 };
 
 class DynamicObject : public GameObject
 {
 public:
-	DynamicObject(size_t x, size_t y, size_t w, size_t h, sf::String filename, size_t speed):GameObject(x, y, w, h, filename)
+	DynamicObject(sf::Vector2f pos, sf::Vector2i size, sf::Vector2f speed, sf::String filename) :
+		GameObject(pos, size, filename),
+		direction_(RIGHT),
+		v_(speed) {}
+	
+	virtual void Move() = 0;
+	void DoPhysics(float dt)
 	{
-		speed_ = speed;
-		y0_ = y;
-		y0speed_ = 20;
-		yspeed_ = 0;
-		ffa_ = 2.5;
-		direction_ = 0;
+		if (!gravity_ || is_on_floor_)
+			return;
+		pos_ += v_*dt;
+		v_.y -= FREE_FALL_ACC*dt;
 	}
-	virtual void Move(float time) = 0;
-	size_t direction_;
-	float speed_;
-	float y0speed_;
-	size_t y0_;
-	float yspeed_;
-	float ffa_;
+	void setDirection(DirectType direct)
+	{
+		direction_ = direct;
+	}
+protected:
+	DirectType direction_;
+	sf::Vector2f v_;
+	bool gravity_;
+	bool is_on_floor_;
 };
 
 class StaticObject : public GameObject
@@ -55,56 +63,49 @@ class StaticObject : public GameObject
 class Hero : public DynamicObject
 {
 public:
-	Hero();
-	Hero(size_t x, size_t y, size_t w, size_t h, sf::String filename, size_t speed, size_t hp, size_t armour, size_t mana)
-		:DynamicObject(x, y, w, h, filename, speed)
-	{
-		hp_ = hp;
-		armour_ = armour;
-		mana_ = mana;
-	}
+	Hero(sf::Vector2f pos, sf::Vector2i size, sf::Vector2f speed, sf::String filename, float jump_speed, size_t hp, size_t armour, size_t mana) :
+		DynamicObject(pos, size, speed, filename),
+		jump_speed_(jump_speed),
+		hp_(hp),
+		armour_(armour),
+		mana_(mana) {}
+
 	virtual void Attack() = 0;
 	virtual void Jump() = 0;
+
+protected:
 	size_t hp_;
 	size_t armour_;
 	size_t mana_;
+	float jump_speed_;
 };
 
 class Wizard : public Hero
 {
 public:
-	Wizard(size_t x, size_t y, size_t w, size_t h, sf::String filename, size_t speed, size_t hp, size_t armour, size_t mana)
-		:Hero(x, y, w, h, filename, speed, hp, armour, mana){}
+	Wizard(sf::Vector2f pos, sf::Vector2i size, sf::Vector2f speed, sf::String filename, float jump_speed, size_t hp, size_t armour, size_t mana) :
+		Hero(pos, size, speed, filename, jump_speed, hp, armour, mana) {}
+	
 	void Attack() override
 	{
 
 	}
 	void Jump() override
 	{
-		if (y_ == y0_ && yspeed_ == 0)
-			yspeed_ = y0speed_;
-		y_ -= yspeed_;
-		yspeed_ -= ffa_;
-		if (y_ >= y0_)
-		{
-			y_ = y0_;
-			yspeed_ = 0;
-		}
-		sprite_.setPosition(x_, y_);
+		
 	}
-	void Move(float time) override
+	void Move() override
 	{
 		switch (direction_)
 		{
 		case 0: //left
-			x_ -= speed_*time;
+			pos_.x -= v_.x;
 			break;
 		case 1:	//right
-			x_ += speed_*time;
+			pos_.x += v_.x;
 			break;
 		}
-		direction_ = -1;
-		sprite_.setPosition(x_, y_);
+		sprite_.setPosition(pos_);
 	}
 	void Draw() override
 	{
