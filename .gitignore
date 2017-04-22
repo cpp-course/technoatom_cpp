@@ -10,8 +10,8 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
-Graphics/Graphics.vcxproj
-Graphics/Graphics.sln
+*.vcxproj
+*.sln
 
 
 # Build results
