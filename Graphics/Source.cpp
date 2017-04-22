@@ -1,22 +1,23 @@
 //#include <SFML/Graphics.hpp>
 #include <Windows.h>
+#include <memory>
 #include "objects.h"
 #include "TestMap.h"
 
-const size_t myfloor = 400;
+const sf::Vector2f start_point(0, 0);
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "Level_1");
+	sf::RenderWindow window(sf::VideoMode(WINDOW_X, WINDOW_Y), "Level_1");
 	sf::Clock clock;
 	//sf::CircleShape shape(100.f);
 	//sf::Texture *wiz = new sf::Texture;
 	//wiz->loadFromFile("Textures/Wizard.png");
 	//sf::RectangleShape wizard(sf::Vector2f(128., 128.));
 	//wizard.setTexture(wiz);
-	sf::RectangleShape background(sf::Vector2f(800, 600));
+	sf::RectangleShape background(sf::Vector2f(WINDOW_X, WINDOW_Y));
 	background.setFillColor(sf::Color::White);
-	Hero *player = new Wizard(400, myfloor, 128, 128, "Wizard.png", 5, 5, 2, 10);
+	std::shared_ptr<Hero> player(new Wizard(start_point, &window));
 
 	while (window.isOpen())
 	{
@@ -29,28 +30,15 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			player->setDirection(RIGHT);
-			player->Move();
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		{
-			player->setDirection(LEFT);
-			player->Move();
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || player->y_ < myfloor)
-		{
-			player->Jump();
-		}
+		
+		player->Control();
+		player->Physics(time);
+		player->Intersection();
 		window.clear();
 		window.draw(background);
-		window.draw(player->sprite_);
-		//window.draw(wizard);
+		player->Draw();
 		window.display();
-		//wizard.move(sf::Vector2f(2, 0));
-		Sleep(10);
+		//Sleep(10);
 	}
-	delete player;
 	return 0;
 }

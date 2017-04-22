@@ -26,5 +26,16 @@
     <ClInclude Include="TestMap.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\Wizard_L.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Textures\Wizard.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef TESTMAP_H
+#define TESTMAP_H
+
 #include <SFML/Graphics.hpp>
 const int M_HEIGHT = 20;
 const int M_WIDTH = 40;
@@ -24,3 +26,5 @@ sf::String TileMap[M_HEIGHT] = {
 	"0                                      0",
 	"0000000000000000000000000000000000000000"
 };
+
+#endif

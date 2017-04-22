@@ -1,29 +1,38 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <string>
 #include "Constants.h"
+
+template <typename T>
+const sf::Vector2<T> vec0 = sf::Vector2<T>(0, 0);
 
 class GameObject
 {
 public:
-	GameObject(sf::Vector2f pos, sf::Vector2i size, sf::String filename)
+	GameObject(sf::Vector2f pos, sf::RenderTarget *win, sf::String filename) :
+		win_(win),
+		filename_(filename)
 	{
-		size_ = size;
+		image_.loadFromFile("Textures/" + filename);
+		size_.x = size_.y = image_.getSize().y;
 		pos_.x = pos.x + size_.x / 2;
 		pos_.y = pos.y + size_.y / 2;
-		image_.loadFromFile("Textures/" + filename);
 		texture_.loadFromImage(image_);
 		sprite_.setTexture(texture_);
-		sprite_.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), size_));
-		sprite_.setOrigin(size_.x / 2, size.y / 2);
+		sprite_.setTextureRect(sf::IntRect(vec0<int>, size_));
+		sprite_.setOrigin(size_.x / 2, size_.y / 2);
 		sprite_.setPosition(pos_);
 	}
-	virtual void Draw() = 0;
+	/*virtual*/ void Draw()
+	{
+		sprite_.setPosition(pos_);
+		win_->draw(sprite_);
+	}
 protected:
 	sf::String filename_;
 	sf::Image image_;
 	sf::Texture texture_;
 	sf::Sprite sprite_;
+	sf::RenderTarget *win_;
 	sf::Vector2f pos_;	//! coords of an object
 	sf::Vector2i size_;	//! params of an object
 };
@@ -31,28 +40,74 @@ protected:
 class DynamicObject : public GameObject
 {
 public:
-	DynamicObject(sf::Vector2f pos, sf::Vector2i size, sf::Vector2f speed, sf::String filename) :
-		GameObject(pos, size, filename),
+	DynamicObject(sf::Vector2f pos, sf::RenderTarget *win, sf::Vector2f v0, sf::String filename) :
+		GameObject(pos, win, filename),
 		direction_(RIGHT),
-		v_(speed) {}
-	
-	virtual void Move() = 0;
-	void DoPhysics(float dt)
+		v0_(v0),
+		v_(sf::Vector2f(0,0)) {}
+
+	void Control()
 	{
-		if (!gravity_ || is_on_floor_)
-			return;
-		pos_ += v_*dt;
-		v_.y -= FREE_FALL_ACC*dt;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			setDirection(RIGHT);
+			v_.x = v0_.x;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			setDirection(LEFT);
+			v_.x = -v0_.x;
+		}
+		else
+			v_.x = 0;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && is_on_floor_)
+		{
+			is_on_floor_ = false;
+			v_.y = -v0_.y;
+		}
 	}
+
+	void Physics(float dt)
+	{
+		pos_ += v_*dt;
+		if (gravity_ && !is_on_floor_)
+			v_.y += FREE_FALL_ACC*dt;
+	}
+
+	void Intersection()
+	{
+		if (pos_.y >= WINDOW_Y - size_.y / 2)
+		{
+			is_on_floor_ = true;
+			pos_.y = WINDOW_Y - size_.y / 2;
+			v_.y = 0;
+		}
+		if (pos_.x < size_.x / 2)
+		{
+			pos_.x = size_.x / 2;
+		}
+		if (pos_.x > WINDOW_X - size_.x / 2)
+		{
+			pos_.x = WINDOW_X - size_.x / 2;
+		}
+	}
+
 	void setDirection(DirectType direct)
 	{
-		direction_ = direct;
+		switch (direction_ = direct)
+		{
+		case RIGHT:
+			sprite_.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), size_));
+			break;
+		case LEFT:
+			sprite_.setTextureRect(sf::IntRect(sf::Vector2i(size_.x, 0), size_));
+		}
 	}
 protected:
 	DirectType direction_;
-	sf::Vector2f v_;
+	sf::Vector2f v_, v0_;
 	bool gravity_;
-	bool is_on_floor_;
+	bool is_on_floor_ = false;
 };
 
 class StaticObject : public GameObject
@@ -63,54 +118,39 @@ class StaticObject : public GameObject
 class Hero : public DynamicObject
 {
 public:
-	Hero(sf::Vector2f pos, sf::Vector2i size, sf::Vector2f speed, sf::String filename, float jump_speed, size_t hp, size_t armour, size_t mana) :
-		DynamicObject(pos, size, speed, filename),
-		jump_speed_(jump_speed),
+	Hero(sf::Vector2f pos, sf::RenderTarget *win, sf::Vector2f v0, sf::String filename, size_t hp, size_t armour, size_t mana) :
+		DynamicObject(pos, win, v0, filename),
 		hp_(hp),
 		armour_(armour),
 		mana_(mana) {}
 
 	virtual void Attack() = 0;
-	virtual void Jump() = 0;
 
 protected:
 	size_t hp_;
 	size_t armour_;
 	size_t mana_;
-	float jump_speed_;
 };
 
 class Wizard : public Hero
 {
 public:
-	Wizard(sf::Vector2f pos, sf::Vector2i size, sf::Vector2f speed, sf::String filename, float jump_speed, size_t hp, size_t armour, size_t mana) :
-		Hero(pos, size, speed, filename, jump_speed, hp, armour, mana) {}
+	Wizard(sf::Vector2f pos, sf::RenderTarget *win) :
+		Hero(pos, win, sf::Vector2f(wiz_speed, wiz_jump), "Wizard.png", wiz_hp, wiz_armour, wiz_mana)
+	{
+		gravity_ = true;
+	}
 	
 	void Attack() override
 	{
 
 	}
-	void Jump() override
-	{
-		
-	}
-	void Move() override
-	{
-		switch (direction_)
-		{
-		case 0: //left
-			pos_.x -= v_.x;
-			break;
-		case 1:	//right
-			pos_.x += v_.x;
-			break;
-		}
-		sprite_.setPosition(pos_);
-	}
-	void Draw() override
-	{
-
-	}
+private:
+	static const size_t wiz_speed = 5; // float
+	static const size_t wiz_jump = 15; // float
+	static const size_t wiz_hp = 5;
+	static const size_t wiz_armour = 2;
+	static const size_t wiz_mana = 10;
 };
 
 class Archer : public Hero
