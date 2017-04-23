@@ -135,6 +135,7 @@
     <ClInclude Include="TestMap.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Textures\Platform.png" />
     <Image Include="Textures\Wizard_L.png" />
     <Image Include="Textures\Wizard.png" />
   </ItemGroup>

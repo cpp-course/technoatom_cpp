@@ -37,5 +37,8 @@
     <Image Include="Textures\Wizard.png">
       <Filter>Файлы ресурсов</Filter>
     </Image>
+    <Image Include="Textures\Platform.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>

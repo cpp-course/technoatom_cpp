@@ -1,8 +1,6 @@
 //#include <SFML/Graphics.hpp>
 #include <Windows.h>
-#include <memory>
 #include "objects.h"
-#include "TestMap.h"
 
 const sf::Vector2f start_point(0, 0);
 
@@ -19,6 +17,8 @@ int main()
 	background.setFillColor(sf::Color::White);
 	std::shared_ptr<Hero> player(new Wizard(start_point, &window));
 
+	init_static_obj(&window);
+
 	while (window.isOpen())
 	{
 		float time = clock.getElapsedTime().asMicroseconds();
@@ -30,15 +30,17 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-		
 		player->Control();
 		player->Physics(time);
 		player->Intersection();
 		window.clear();
 		window.draw(background);
+		draw_static_obj();
 		player->Draw();
 		window.display();
 		//Sleep(10);
 	}
+
+	delete_stat_obj();
 	return 0;
 }
