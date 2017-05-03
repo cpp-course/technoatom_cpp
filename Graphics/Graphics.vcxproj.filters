@@ -18,15 +18,18 @@
     <ClCompile Include="Source.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="objects.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="objects.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="TestMap.h">
+    <ClInclude Include="Constants.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Constants.h">
+    <ClInclude Include="LevelMap.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

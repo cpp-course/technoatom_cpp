@@ -92,7 +92,15 @@ void DynamicObject::Intersection()
 		pos_.x = WINDOW_X - size_.x / 2;
 	}
 }
-void DynamicObject::setDirection(DirectType direct)
+DynamicObject::~DynamicObject()
+{
+	//??????????????????????????
+}
+DirectType DynamicObject::GetDirection()
+{
+	return direction_;
+}
+void DynamicObject::SetDirection(DirectType direct)
 {
 	switch (direction_ = direct)
 	{
@@ -103,10 +111,46 @@ void DynamicObject::setDirection(DirectType direct)
 		sprite_.setTextureRect(sf::IntRect(sf::Vector2i(size_.x, 0), size_));
 	}
 }
+sf::Vector2f DynamicObject::GetVelo()
+{
+	return v_;
+}
+void DynamicObject::SetVelo(sf::Vector2f v)
+{
+	v_ = v;
+}
+sf::Vector2f DynamicObject::GetVelo0()
+{
+	return v0_;
+}
+bool DynamicObject::GetGravity()
+{
+	return gravity_;
+}
+void DynamicObject::SetGravity(bool gravity)
+{
+	gravity_ = gravity;
+}
+bool DynamicObject::GetIsOnFloor()
+{
+	return is_on_floor_;
+}
+void DynamicObject::SetIsOnFloor(bool is_on_floor)
+{
+	is_on_floor_ = is_on_floor;
+}
 //----------------------------------------------------------------------------------
 StaticObject::StaticObject(sf::Vector2f pos, BlockType type) :
 	GameObject(pos, GetBlockType(type))
 {}
+StaticObject::~StaticObject()
+{
+	//?????????????????????????
+}
+BlockType StaticObject::GetType()
+{
+	return type_;
+}
 //----------------------------------------------------------------------------------
 Hero::Hero(sf::Vector2f pos, sf::Vector2f v0, HeroType type):
 	DynamicObject(pos, v0, GetFilename(type))
@@ -132,6 +176,38 @@ Hero::Hero(sf::Vector2f pos, sf::Vector2f v0, HeroType type):
 		Init(0, 0, 0);
 		break;
 	}
+}
+Hero::~Hero()
+{
+	//?????????????????????????
+}
+HeroType Hero::GetType()
+{
+	return type_;
+}
+size_t Hero::GetHp()
+{
+	return hp_;
+}
+void Hero::SetHp(size_t newhp)
+{
+	hp_ = newhp;
+}
+size_t Hero::GetArmour()
+{
+	return armour_;
+}
+void Hero::SetArmour(size_t newarmour)
+{
+	armour_ = newarmour;
+}
+size_t Hero::GetMana()
+{
+	return mana_;
+}
+void Hero::SetMana(size_t newmana)
+{
+	mana_ = newmana;
 }
 void Hero::Init(const size_t hp, const size_t armour, const size_t mana)
 {

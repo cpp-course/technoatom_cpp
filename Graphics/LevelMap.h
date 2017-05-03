@@ -1,5 +1,5 @@
-#ifndef TESTMAP_H
-	#define TESTMAP_H
+#ifndef LEVELMAP_H
+	#define LEVELMAP_H
 	#include <SFML/Graphics.hpp>
 #endif
 
@@ -22,6 +22,12 @@ LevelMap::LevelMap(size_t lvl_num):
 	height_(0)
 {
 	Init(lvl_num);
+}
+LevelMap::~LevelMap()
+{
+	for (int i = 0;i < height_;i++)
+		for (int j = 0;j < width_;j++)
+			delete Map[i][j];
 }
 void LevelMap::Init(size_t lvl_num)
 {

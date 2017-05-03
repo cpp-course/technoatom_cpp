@@ -14,6 +14,8 @@ public:
 		sprite_.setPosition(pos_);
 		win->draw(sprite_);
 	}
+	~GameObject();
+
 protected:
 	//void SetSprite(sf::String filename);
 	sf::String filename_;
@@ -28,10 +30,20 @@ class DynamicObject : public GameObject
 {
 public:
 	DynamicObject(sf::Vector2f pos, sf::Vector2f v0, sf::String filename);
-	void Control();
+	void Control();//переделать, сделать virtual
 	void Physics(float dt);
 	void Intersection();
-	void setDirection(DirectType direct);
+	~DynamicObject();
+	DirectType GetDirection();
+	void SetDirection(DirectType direct);
+	sf::Vector2f GetVelo();
+	void SetVelo(sf::Vector2f v);
+	sf::Vector2f GetVelo0();
+	void SetVelo0(sf::Vector2f v0);			//???????
+	bool GetGravity();
+	void SetGravity(bool gravity);
+	bool GetIsOnFloor();
+	void SetIsOnFloor(bool is_on_floor);
 protected:
 	DirectType direction_;
 	sf::Vector2f v_, v0_;
@@ -43,6 +55,9 @@ class StaticObject : public GameObject
 {
 public:
 	StaticObject(sf::Vector2f pos, BlockType type);
+	~StaticObject();
+	BlockType GetType();
+protected:
 	BlockType type_;
 };
 
@@ -50,7 +65,15 @@ class Hero : public DynamicObject
 {
 public:
 	Hero(sf::Vector2f pos, sf::Vector2f v0, HeroType type);
-	void Attack();
+	//void Attack();
+	~Hero();
+	HeroType GetType();
+	size_t GetHp();
+	void SetHp(size_t newhp);
+	size_t GetArmour();
+	void SetArmour(size_t newarmour);
+	size_t GetMana();
+	void SetMana(size_t newmana);
 protected:
 	void Init(const size_t hp, const size_t armour, const size_t mana);
 	HeroType type_;
@@ -61,7 +84,14 @@ protected:
 
 class Projectile : public DynamicObject
 {
-
+public:
+	Projectile();
+	~Projectile();
+	ProjType GetType();
+	size_t GetDamage();
+protected:
+	ProjType type_;
+	size_t damage_;
 };
 
 /*

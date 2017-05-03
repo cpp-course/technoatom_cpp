@@ -84,6 +84,11 @@ const char * GetBlockType(BlockType type)
 		return "DefaultBlock.png";
 	}
 }
+enum ProjType
+{
+	Fireball,
+	Arrow
+};
 const char * GetLvlFile(size_t lvl_num)
 {
 	switch (lvl_num)

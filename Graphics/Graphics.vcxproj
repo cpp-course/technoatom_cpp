@@ -127,12 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="objects.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="LevelMap.h" />
     <ClInclude Include="objects.h" />
-    <ClInclude Include="TestMap.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\Platform.png" />
